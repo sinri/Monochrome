@@ -5,8 +5,10 @@
  */
 package monokuro;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -37,6 +39,40 @@ public class MNCImage {
             this.mncData[i]=(byte)Bs.get(i);
         }
     }
+  
+    /**
+     *
+     * @param file
+     */
+    public MNCImage(File file) throws FileNotFoundException, IOException{
+        BufferedInputStream bis=null;
+        FileInputStream fis=new FileInputStream(file);
+        bis=new BufferedInputStream(fis);
+        
+        ArrayList<Byte> Bs = new ArrayList<>();
+        
+        int onebyte=bis.read();
+        while(onebyte!=-1){
+            Bs.add(MNCImage.int2byte(onebyte));
+            onebyte=bis.read();
+        }
+        
+        this.mncData = new byte[Bs.size()];
+        for(int i=0;i<Bs.size();i++){
+            this.mncData[i]=(byte)Bs.get(i);
+        }
+        
+        width=((this.mncData[0] & 0x000000FF)<<24)|
+                ((this.mncData[1] & 0x000000FF)<<16)|
+                ((this.mncData[2] & 0x000000FF)<<8)|
+                ((this.mncData[3] & 0x000000FF));
+        height=((this.mncData[4] & 0x000000FF)<<24)|
+                ((this.mncData[5] & 0x000000FF)<<16)|
+                ((this.mncData[6] & 0x000000FF)<<8)|
+                ((this.mncData[7] & 0x000000FF));
+        grayBits=this.mncData[8];
+        
+    }
 
     public void saveMNCImageToFile(File file) throws FileNotFoundException, IOException {
         BufferedOutputStream bos = null;
@@ -48,6 +84,33 @@ public class MNCImage {
         bos.write(this.mncData);
 
         bos.close();
+    }
+    
+    public CommonImage convertToCommonImage(){
+        
+        ArrayList<Integer> pal=new ArrayList<>();
+        
+        for(int i=9;i<this.mncData.length;i++){
+            int unit=this.mncData[i] & 0x000000FF;
+            int gray=(unit>>(8-this.grayBits))<<(8-this.grayBits);
+            int len=((unit<<this.grayBits)& 0x000000FF)>>this.grayBits;
+            
+            int c=MNCImage.argbValueFromGray(gray, this.grayBits);
+            
+            //System.out.println("unit["+unit+"] gray="+gray+" len="+len+" color="+c );
+            
+            for(int j=0;j<len;j++){
+                pal.add(c);
+            }
+        }
+        
+        int[] pixels=new int[pal.size()];
+        for(int i=0;i<pal.size();i++){
+            pixels[i]=pal.get(i);
+        }
+        System.out.println("width="+this.width+" height="+this.height+" pixel size="+pal.size());
+        CommonImage ci=new CommonImage(this.width,this.height,pixels);
+        return ci;
     }
 
     /**
@@ -164,6 +227,9 @@ public class MNCImage {
         int v3 = v2 >> grayBits;
         int v4 = v3 >> grayBits;
         int part = v1 | v2 | v3 | v4;
+        part=0x000000FF & part;
+        //part=0xFF000000 | (part | (part<<8) | (part<<16));
+        part=CommonImage.colorWithARGB(255, part, part, part);
         //System.out.println("argbValueFromGray("+gray+","+grayBits+")="+v1+","+v2+","+v3+","+v4+" :: "+part);
         return part;
     }

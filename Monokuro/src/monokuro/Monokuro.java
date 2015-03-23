@@ -24,9 +24,14 @@ public class Monokuro {
         try {
             // TODO code application logic here
             CommonImage oriImage=new CommonImage(new File("testImage.jpg"));
-//            MNCImage.buildMNC(oriImage,(byte)2);
-            MNCImage mncImage=new MNCImage(oriImage,(byte)3);
-            mncImage.saveMNCImageToFile(new File("guhehe.mnc"));
+            for(byte grayBits=1;grayBits<=4;grayBits++){
+                MNCImage mncImage=new MNCImage(oriImage,grayBits);
+                mncImage.saveMNCImageToFile(new File("guhehe"+grayBits+".mnc"));
+                
+                MNCImage readMNCImage=new MNCImage(new File("guhehe"+grayBits+".mnc"));
+                CommonImage convertedImage=readMNCImage.convertToCommonImage();
+                convertedImage.saveToFileWithFormat(new File("ohoho"+grayBits+".jpg"), "jpg");
+            }
         } catch (IOException ex) {
             Logger.getLogger(Monokuro.class.getName()).log(Level.SEVERE, null, ex);
         }

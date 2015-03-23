@@ -24,7 +24,7 @@ public class CommonImage {
     }
     
     public CommonImage(int width,int height,int[] pixels){
-        image=new BufferedImage(width,height,BufferedImage.TYPE_INT_ARGB);
+        image=new BufferedImage(width,height,BufferedImage.TYPE_INT_RGB);
         this.setImageWithARGBArray(width, height, pixels);
     }
     
@@ -70,19 +70,19 @@ public class CommonImage {
     }
     
     public static int alphaFromARGB(int cARGB){
-        return  ((cARGB >> 24) & 0xFF);
+        return  ((cARGB >> 24) & 0x000000FF);
     }
     public static int redFromARGB(int cARGB){
-        return  ((cARGB >> 16) & 0xFF);
+        return  ((cARGB >> 16) & 0x000000FF);
     }
     public static int greenFromARGB(int cARGB){
-        return  ((cARGB >> 8) & 0xFF);
+        return  ((cARGB >> 8) & 0x000000FF);
     }
     public static int blueFromARGB(int cARGB){
-        return  ((cARGB) & 0xFF);
+        return  ((cARGB) & 0x000000FF);
     }
     
-    public static int colorWithARGB(byte alpha,byte red, byte green, byte blue){
+    public static int colorWithARGB(int alpha,int red, int green, int blue){
         return (alpha<<24)|(red<<16)|(green<<8)|blue;
     }
 }
