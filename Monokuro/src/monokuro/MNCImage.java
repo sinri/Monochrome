@@ -222,11 +222,19 @@ public class MNCImage {
     }
 
     public static int argbValueFromGray(int gray, byte grayBits) {
-        int v1 = gray;
-        int v2 = v1 >> grayBits;
-        int v3 = v2 >> grayBits;
-        int v4 = v3 >> grayBits;
-        int part = v1 | v2 | v3 | v4;
+//        int v1 = gray;
+//        int v2 = v1 >> grayBits;
+//        int v3 = v2 >> grayBits;
+//        int v4 = v3 >> grayBits;
+//        int part = v1 | v2 | v3 | v4;
+        
+        int part=0;
+        int v=gray;
+        for(int i=0;i<8/grayBits;i++){
+            part=part|v;
+            v=v>>grayBits;
+        }
+        
         part=0x000000FF & part;
         //part=0xFF000000 | (part | (part<<8) | (part<<16));
         part=CommonImage.colorWithARGB(255, part, part, part);

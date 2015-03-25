@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package monokuro;
 
 import java.io.File;
@@ -23,19 +22,24 @@ public class Monokuro {
     public static void main(String[] args) {
         try {
             // TODO code application logic here
-            CommonImage oriImage=new CommonImage(new File("testImage.jpg"));
-            for(byte grayBits=1;grayBits<=4;grayBits++){
-                MNCImage mncImage=new MNCImage(oriImage,grayBits);
-                mncImage.saveMNCImageToFile(new File("guhehe"+grayBits+".mnc"));
-                
-                MNCImage readMNCImage=new MNCImage(new File("guhehe"+grayBits+".mnc"));
-                CommonImage convertedImage=readMNCImage.convertToCommonImage();
-                convertedImage.saveToFileWithFormat(new File("ohoho"+grayBits+".jpg"), "jpg");
-            }
+            test_convertOnce(new File("testImage.jpg"));
+            test_convertOnce(new File("testImage.jpg__2.png"));
         } catch (IOException ex) {
             Logger.getLogger(Monokuro.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
-    
+
+    private static void test_convertOnce(File file) throws IOException {
+        CommonImage oriImage = new CommonImage(file);
+        for (byte grayBits = 1; grayBits <= 4; grayBits++) {
+            MNCImage mncImage = new MNCImage(oriImage, grayBits);
+            mncImage.saveMNCImageToFile(new File(file.getName()+"_" + grayBits + ".mnc"));
+
+            MNCImage readMNCImage = new MNCImage(new File(file.getName()+"_" + grayBits + ".mnc"));
+            CommonImage convertedImage = readMNCImage.convertToCommonImage();
+            convertedImage.saveToFileWithFormat(new File(file.getName()+"__" + grayBits + ".jpg"), "jpg");
+            convertedImage.saveToFileWithFormat(new File(file.getName()+"__" + grayBits + ".png"), "png");
+        }
+    }
 }
