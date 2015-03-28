@@ -126,12 +126,14 @@ public class MNCImage {
         int[] pixels = image.getARGBArray(null);
 
         //DEBUG
+        /*
         for (int i = 0; i < pixels.length; i++) {
             System.out.print(pixels[i] + " ");
             if ((i + 1) % (width) == 0) {
                 System.out.println();
             }
         }
+        */
 
         ArrayList<Byte> list = new ArrayList<>();
 
@@ -188,6 +190,7 @@ public class MNCImage {
         }
 
         //DEBUG
+        /*
         System.out.println("===============");
         System.out.println("width=" + width + " height=" + height);
 //        System.out.println((byte) (width & 0xFF000000));
@@ -201,6 +204,7 @@ public class MNCImage {
                 System.out.println();
             }
         }
+        * */
 
         return list;
     }
