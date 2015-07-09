@@ -33,6 +33,7 @@ public class Monokuro {
             //System.out.println(args.length);
             if (args.length < 2) {
                 Monokuro.showUsage();
+                return;
             }
             String option = args[0];
             String input = args[1];
@@ -40,12 +41,12 @@ public class Monokuro {
             if (args.length > 2) {
                 output = args[2];
             }
-            
+
 
             if (option.startsWith("-f")) {
                 //File
                 CommonImage oriImage = new CommonImage(new File(input));
-                
+
                 MNCImage mncImage = new MNCImage(oriImage, (byte) 2);
                 if (option.endsWith("!")) {
                     mncImage.saveMNCImageToFile(new File(output));
@@ -67,21 +68,24 @@ public class Monokuro {
                         outputFolder.mkdirs();
                         for (File file : subFiles) {
                             if (file.isFile() && (file.getName().endsWith(".png") || file.getName().endsWith(".jpg"))) {
-                                System.out.println("Processing "+file.getAbsolutePath()+"...");
-                                String file_name=Monokuro.fileNameWithoutExtention(file.getName());
-                                
-                                CommonImage oriImage = new CommonImage(file);
-                                
-                                MNCImage mncImage = new MNCImage(oriImage, (byte) 2);
-                                if (option.endsWith("!")) {
-                                    mncImage.saveMNCImageToFile(new File(output+"/"+file_name+".mnc"));
-                                } else {
-                                    CommonImage convertedImage = mncImage.convertToCommonImage();
-                                    if (output.endsWith(".jpg") || output.endsWith(".jpeg")) {
-                                        convertedImage.saveToFileWithFormat(new File(output+"/"+file_name+".jpg"), "jpg");
+                                System.out.println("Processing " + file.getAbsolutePath() + "...");
+                                String file_name = Monokuro.fileNameWithoutExtention(file.getName());
+                                try {
+                                    CommonImage oriImage = new CommonImage(file);
+
+                                    MNCImage mncImage = new MNCImage(oriImage, (byte) 2);
+                                    if (option.endsWith("!")) {
+                                        mncImage.saveMNCImageToFile(new File(output + "/" + file_name + ".mnc"));
                                     } else {
-                                        convertedImage.saveToFileWithFormat(new File(output+"/"+file_name+".png"), "png");
+                                        CommonImage convertedImage = mncImage.convertToCommonImage();
+                                        if (output.endsWith(".jpg") || output.endsWith(".jpeg")) {
+                                            convertedImage.saveToFileWithFormat(new File(output + "/" + file_name + ".jpg"), "jpg");
+                                        } else {
+                                            convertedImage.saveToFileWithFormat(new File(output + "/" + file_name + ".png"), "png");
+                                        }
                                     }
+                                } catch (IOException e) {
+                                    System.out.println("Exception! " + e.getMessage());
                                 }
                             }
                         }
@@ -98,12 +102,15 @@ public class Monokuro {
         }
 
     }
-    
-    public static String fileNameWithoutExtention(String fn){
-        int lastPointIndex=fn.lastIndexOf(".");
-        
-        if(lastPointIndex==-1)return fn;
-        else return fn.substring(0, lastPointIndex);
+
+    public static String fileNameWithoutExtention(String fn) {
+        int lastPointIndex = fn.lastIndexOf(".");
+
+        if (lastPointIndex == -1) {
+            return fn;
+        } else {
+            return fn.substring(0, lastPointIndex);
+        }
     }
 
     private static void test_convertOnce(File file) throws IOException {
