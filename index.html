@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Monochrome by sinri</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-dark.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/sinri/Monochrome">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/sinri/Monochrome/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/sinri/Monochrome/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Monochrome</h1>
+          <p>Monochromatic Image Compress Solution</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/sinri">sinri</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h1>
+<a id="monochrome" class="anchor" href="#monochrome" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Monochrome</h1>
+
+<p>Monochromatic Image Compress Solution</p>
+
+<h2>
+<a id="why-monochrome" class="anchor" href="#why-monochrome" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Why Monochrome</h2>
+
+<p>One day I had a requirement to make up an app on iOS to display hymns without downloading. After I got the scaned pages of hymnal books, the app was built up quickly. Yes, thanks God.</p>
+
+<p>Then what's the problem? The size of the images was too large. Download an app with more than 200MB form App Store is a nightmare in almost area of China Mainland. It might be the only way to make the images take lower space.</p>
+
+<p>With the mercy of the Lord, the original images are simple with only white and black pixels. Of cause actually there are pixels in other gray scales, in eyes they are almost one unit. To compress them, one side is to decrease the space cost for color, and the other side is to unit as much pixels with same color as one unit to record.</p>
+
+<h2>
+<a id="algorithm" class="anchor" href="#algorithm" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Algorithm</h2>
+
+<p>The algorithm, finally, was designed as following as Byte-Stream of configs and units. It is an specialized implementation of Run-Length-Encoding.</p>
+
+<h3>
+<a id="byte-stream" class="anchor" href="#byte-stream" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Byte-Stream</h3>
+
+<p>The Monochrome Image record the image as gray-scaled matrix. The first 4 bytes contains the number of pixels in width side, and the next 4 bytes contains the number of pixels in height side. The 9th byte recorded the number of bits to show gray scale. Form the 10th byte on, each byte contains one unit, which contains color and length and could be explained in details beneath. The units are set one by one form the first row on top to the last row on bottom, and from left to right in each row.</p>
+
+<h3>
+<a id="configs" class="anchor" href="#configs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Configs</h3>
+
+<p>The first 4 bytes contains the number of pixels in width side, and the next 4 bytes contains the number of pixels in height side. To compute the width and height, commonly use </p>
+
+<pre><code>// Java, C, C++, Objective-C
+int width=(buffer[0]&lt;&lt;24)+(buffer[1]&lt;&lt;16)+(buffer[2]&lt;&lt;8)+(buffer[3]);
+int height=(buffer[4]&lt;&lt;24)+(buffer[5]&lt;&lt;16)+(buffer[6]&lt;&lt;8)+(buffer[7]);
+</code></pre>
+
+<p>Width and height should not be larger than 2^31 (or 2^32 if parsed as unsigned).</p>
+
+<p>The 9th byte recorded the number of bits to show gray scale.</p>
+
+<pre><code>Byte grayBits = buffer[8];
+</code></pre>
+
+<p>The gray bits should be a number with one and seven, it decides the number of bits in one byte unit used for gray scale. For example, when it was set to 2, any pixel in the unit would have four choices of color in gray scale, 0x00, 0x55, 0xAA, and 0xFF.</p>
+
+<h3>
+<a id="unit" class="anchor" href="#unit" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Unit</h3>
+
+<p>One unit in the stream takes one byte. The first X bits contains the gray scale information, and the rest contains the lenth. It is easier to understand with a sample: 0x48 under 2-bit gray scale.</p>
+
+<p>The first 2 bits of 0x48 is 0b01, and the rest (8-2) bits is 0b001000. So that this unit is maked up with 0b00001000 (4) pixels of gray scale 0b01010101 (i.e. 0x55, RGB as #555555).</p>
+
+<h2>
+<a id="compress" class="anchor" href="#compress" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Compress</h2>
+
+<p>It might be as good as PNG when using 2-bit gray scale, but as it contains much more same encoding, it could be compressed to 50% or so with any Entropy Encoding. For easy, zip is a good choice.</p>
+
+<h2>
+<a id="implementation-and-usage" class="anchor" href="#implementation-and-usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Implementation and Usage</h2>
+
+<p>The complete implementation is given in Java.</p>
+
+<p>For iOS, a read toolkit class provided, which supports to return UIImage instance with NSData input from <code>.mnc</code> file or from <code>.mnc.zip</code> file. It needs <a href="https://github.com/sinri/SinriXcodeBasement">CommonUtil</a> and <a href="https://github.com/soffes/ssziparchive">SSZipArchive</a>.</p>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
