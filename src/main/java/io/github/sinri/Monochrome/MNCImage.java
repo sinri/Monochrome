@@ -56,6 +56,20 @@ public class MNCImage {
 
     }
 
+    public MNCImage(byte[] bytes) {
+        this.mncData = bytes;
+
+        width = ((this.mncData[0] & 0x000000FF) << 24) |
+                ((this.mncData[1] & 0x000000FF) << 16) |
+                ((this.mncData[2] & 0x000000FF) << 8) |
+                ((this.mncData[3] & 0x000000FF));
+        height = ((this.mncData[4] & 0x000000FF) << 24) |
+                ((this.mncData[5] & 0x000000FF) << 16) |
+                ((this.mncData[6] & 0x000000FF) << 8) |
+                ((this.mncData[7] & 0x000000FF));
+        grayBits = this.mncData[8];
+    }
+
     /**
      * @param image    the CommonImage instance
      * @param grayBits [1,7] the number of bits within the ONE-BYTE unit ahea
@@ -194,16 +208,6 @@ public class MNCImage {
     }
 
     public void saveMNCImageToFile(File file) throws IOException {
-//        BufferedOutputStream bos = null;
-//        //create an object of FileOutputStream
-//        FileOutputStream fos = new FileOutputStream(file);
-//        //create an object of BufferedOutputStream
-//        bos = new BufferedOutputStream(fos);
-//
-//        bos.write(this.mncData);
-//
-//        bos.close();
-
         try (
                 BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file))
         ) {

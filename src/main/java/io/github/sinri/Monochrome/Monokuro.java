@@ -76,46 +76,26 @@ public class Monokuro {
         MNCImage mncImage = new MNCImage(oriImage, gray_bytes);
         if (mncFilePath.endsWith(".zip")) {
             mncImage.saveZippedMNCImageToFile(new File(mncFilePath));
-//            ZipHelper.zip(mncImage.getMncData(), new File(mncFilePath));
-
-//            System.out.println("[DEBUG] mnc file ["+mncFilePath+"] created: "+(new File(mncFilePath)).exists());
-//
-//            File zipTemp=new File(mncFilePath+".temp");
-//            ZipHelper.zip(mncFilePath,zipTemp.getAbsolutePath());
-//            System.out.println("[DEBUG] temp zip file ["+zipTemp.getAbsolutePath()+"] created: "+zipTemp.exists());
-//
-//            (new File(mncFilePath)).deleteOnExit();
-//            if(!zipTemp.renameTo(new File(mncFilePath))){
-//                throw new RuntimeException("zip temp rename failed");
-//            }
-
             System.out.println("[DEBUG] mnc.zip file [" + mncFilePath + "] created: " + (new File(mncFilePath)).exists());
         } else {
             mncImage.saveMNCImageToFile(new File(mncFilePath));
-
             System.out.println("[DEBUG] mnc file [" + mncFilePath + "] created: " + (new File(mncFilePath)).exists());
         }
-
     }
 
     protected static void decodeMncFileToCommonImage(String mncFilePath, String commonImageFilePath, String format) throws IOException {
-        File unzipTemp = null;
+        MNCImage mncImage;
         if (mncFilePath.endsWith(".zip")) {
-            // unzip first
             String x = (new File(commonImageFilePath)).getName();
             x = x.substring(0, x.lastIndexOf("."));
-            unzipTemp = new File(x + ".mnc");
-            ZipHelper.unzip(mncFilePath, unzipTemp.getAbsolutePath());
-            mncFilePath = unzipTemp.getAbsolutePath();
+            byte[] bytes = ZipHelper.unzipToBytes(new File(mncFilePath), x + ".mnc");
+            mncImage = new MNCImage(bytes);
+        } else {
+            mncImage = new MNCImage(new File(mncFilePath));
         }
 
-        MNCImage mncImage = new MNCImage(new File(mncFilePath));
         CommonImage commonImage = mncImage.convertToCommonImage();
         commonImage.saveToFileWithFormat(new File(commonImageFilePath), format);
-
-        if (unzipTemp != null) {
-            unzipTemp.deleteOnExit();
-        }
     }
 
     protected static void encodeCommonImagesInDirToMncFiles(byte gray_bytes, String commonImageDirPath, String mncDirPath) throws IOException {

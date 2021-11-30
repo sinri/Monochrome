@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public class NoiseCleanTest {
     public static void main(String[] args) {
-        for (int blockSize = 2; blockSize <= 10; blockSize++) {
+        for (int blockSize = 6; blockSize <= 8; blockSize++) {
             routine(blockSize);
         }
     }
@@ -19,7 +19,7 @@ public class NoiseCleanTest {
             commonImage.cleanNoise(blockSize);
             commonImage.saveToFileWithFormat(new File("/Users/leqee/code/Monochrome/debug/clean_noise_" + blockSize + ".jpg"), "jpg");
 
-            for (byte x = 1; x <= 7; x++) {
+            for (byte x = 1; x <= 1; x++) {
                 MNCImage mncImage = new MNCImage(commonImage, x);
                 mncImage.saveMNCImageToFile(new File("/Users/leqee/code/Monochrome/debug/clean_noise_" + blockSize + "_" + x + ".mnc"));
                 mncImage.convertToCommonImage().saveToFileWithFormat(

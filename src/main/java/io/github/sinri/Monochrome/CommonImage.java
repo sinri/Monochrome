@@ -34,12 +34,7 @@ public class CommonImage {
     }
 
     public static String hexOfColor(int cARGB) {
-//        int alpha=alphaFromARGB(cARGB);
-//        int red=alphaFromARGB(cARGB);
-//        int green=alphaFromARGB(cARGB);
-//        int blue=alphaFromARGB(cARGB);
         return "0x" + Integer.toHexString(cARGB);
-
     }
 
     public static int colorWithARGB(int alpha, int red, int green, int blue) {
@@ -86,7 +81,7 @@ public class CommonImage {
     }
 
     public final void cleanNoise(int blockSize) {
-        System.out.println("cleanNoise blockSize=" + blockSize + " W=" + image.getWidth() + " H=" + image.getHeight());
+//        System.out.println("cleanNoise blockSize=" + blockSize + " W=" + image.getWidth() + " H=" + image.getHeight());
         int x = 0;
         int y = 0;
 
@@ -145,11 +140,9 @@ public class CommonImage {
 
                 // finally
                 y++;
-//                System.out.println("y++ as "+y);
             }
 
             x++;
-//            System.out.println("x++ as "+x);
             y = 0;
         }
 
