@@ -194,15 +194,25 @@ public class MNCImage {
     }
 
     public void saveMNCImageToFile(File file) throws IOException {
-        BufferedOutputStream bos = null;
-        //create an object of FileOutputStream
-        FileOutputStream fos = new FileOutputStream(file);
-        //create an object of BufferedOutputStream
-        bos = new BufferedOutputStream(fos);
+//        BufferedOutputStream bos = null;
+//        //create an object of FileOutputStream
+//        FileOutputStream fos = new FileOutputStream(file);
+//        //create an object of BufferedOutputStream
+//        bos = new BufferedOutputStream(fos);
+//
+//        bos.write(this.mncData);
+//
+//        bos.close();
 
-        bos.write(this.mncData);
+        try (
+                BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file))
+        ) {
+            bos.write(this.mncData);
+        }
+    }
 
-        bos.close();
+    public void saveZippedMNCImageToFile(File file) throws IOException {
+        ZipHelper.zip(this.mncData, file);
     }
 
     public CommonImage convertToCommonImage() {

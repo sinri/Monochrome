@@ -75,7 +75,8 @@ public class Monokuro {
         CommonImage oriImage = new CommonImage(new File(commonImageFilePath));
         MNCImage mncImage = new MNCImage(oriImage, gray_bytes);
         if (mncFilePath.endsWith(".zip")) {
-            ZipHelper.zip(mncImage.getMncData(), new File(mncFilePath));
+            mncImage.saveZippedMNCImageToFile(new File(mncFilePath));
+//            ZipHelper.zip(mncImage.getMncData(), new File(mncFilePath));
 
 //            System.out.println("[DEBUG] mnc file ["+mncFilePath+"] created: "+(new File(mncFilePath)).exists());
 //
