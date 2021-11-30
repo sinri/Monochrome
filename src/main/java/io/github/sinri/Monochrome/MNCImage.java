@@ -227,7 +227,7 @@ public class MNCImage {
         for (int i = 0; i < pal.size(); i++) {
             pixels[i] = pal.get(i);
         }
-        System.out.println("width=" + this.width + " height=" + this.height + " pixel size=" + pal.size());
+//        System.out.println("width=" + this.width + " height=" + this.height + " pixel size=" + pal.size());
         return new CommonImage(this.width, this.height, pixels);
     }
 

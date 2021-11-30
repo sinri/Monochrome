@@ -3,15 +3,20 @@ Monochromatic Image Compress Solution
 
 ## Why Monochrome
 
-One day I had a requirement to make up an app on iOS to display hymns without downloading. After I got the scaned pages of hymnal books, the app was built up quickly. Yes, thanks God.
+One day I had a requirement to make up an app on iOS to display hymns without downloading. After I got the scanned pages
+of hymnal books, the app was built up quickly. Yes, thanks God.
 
-Then what's the problem? The size of the images was too large. Download an app with more than 200MB form App Store is a nightmare in almost area of China Mainland. It might be the only way to make the images take lower space.
+Then what's the problem? The size of the images was too large. Download an app with more than 200 MB form App Store is a
+nightmare in almost area of China Mainland. It might be the only way to make the images take lower space.
 
-With the mercy of the Lord, the original images are simple with only white and black pixels. Of cause actually there are pixels in other gray scales, in eyes they are almost one unit. To compress them, one side is to decrease the space cost for color, and the other side is to unit as much pixels with same color as one unit to record.
+With the mercy of the Lord, the original images are simple with only white and black pixels. Of course actually there
+are pixels in other gray scales, in eyes they are almost one unit. To compress them, one side is to decrease the space
+cost for color, and the other side is to unit as much pixels with same color as one unit to record.
 
 ## Algorithm
 
-The algorithm, finally, was designed as following as Byte-Stream of configs and units. It is an specialized implementation of Run-Length-Encoding.
+The algorithm, finally, was designed as following as Byte-Stream of configs and units. It is a specialized
+implementation of Run-Length-Encoding.
 
 ### Byte-Stream
 
@@ -35,19 +40,47 @@ The gray bits should be a number with one and seven, it decides the number of bi
 
 ### Unit
 
-One unit in the stream takes one byte. The first X bits contains the gray scale information, and the rest contains the lenth. It is easier to understand with a sample: 0x48 under 2-bit gray scale.
+One unit in the stream takes one byte. The first X bits contains the gray scale information, and the rest contains the
+length. It is easier to understand with a sample: 0x48 under 2-bit gray scale.
 
-The first 2 bits of 0x48 is 0b01, and the rest (8-2) bits is 0b001000. So that this unit is maked up with 0b00001000 (4) pixels of gray scale 0b01010101 (i.e. 0x55, RGB as #555555).
+The first 2 bits of 0x48 is 0b01, and the rest (8-2) bits is 0b001000. So that this unit is maked up with 0b00001000 (4)
+pixels of gray scale 0b01010101 (i.e. 0x55, RGB as #555555).
 
 ## Compress
 
-It might be as good as PNG when using 2-bit gray scale, but as it contains much more same encoding, it could be compressed to 50% or so with any Entropy Encoding. For easy, zip is a good choice.
+It might be as good as PNG when using 2-bit gray scale, but as it contains much more same encoding, it could be
+compressed to 50% or so with any Entropy Encoding. For easy, zip is a good choice.
+
+### Monokuro
+
+Monokuro is provided as a jar to help compress/uncompress work.
+
+#### Usage
+
+* `java -jar Monokuro.jar [mnc] GRAY_BYTES [file|dir] INPUT_IMAGE_PATH OUTPUT_MNC[.ZIP]_PATH`
+* `java -jar Monokuro.jar [jpg|png|gif] [file|dir] INPUT_MNC[.ZIP]_PATH OUTPUT_IMAGE_PATH`
+
+* GRAY_BYTES is an integer amongst `[1,7]`.
+
+#### Sample
+
+````shell
+# encode image a.png to b.mnc
+java -jar Monokuro.jar mnc 2 file a.png b.mnc
+# encode image a.png (to b.mnc and then zip it) to c.mnc.zip
+java -jar Monokuro.jar mnc 2 file a.png c.mnc.zip
+# decode, same rules
+java -jar Monokuro.jar jpg file b.mnc a.jpg
+java -jar Monokuro.jar jpg file c.mnc.zip a.jpg
+````
 
 ## Implementation and Usage
 
 The complete implementation is given in Java.
 
-For iOS, a read toolkit class provided, which supports to return UIImage instance with NSData input from `.mnc` file or from `.mnc.zip` file. It needs [CommonUtil](https://github.com/sinri/SinriXcodeBasement) and [SSZipArchive](https://github.com/soffes/ssziparchive).
+For iOS, a read toolkit class provided, which supports to return UIImage instance with NSData input from `.mnc` file or
+from `.mnc.zip` file. It needs [CommonUtil](https://github.com/sinri/SinriXcodeBasement)
+and [SSZipArchive](https://github.com/soffes/ssziparchive).
 
 
 
