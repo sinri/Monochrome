@@ -12,6 +12,10 @@ public class CommonImage {
         image = ImageIO.read(file);
     }
 
+    public CommonImage(BufferedImage image) {
+        this.image = image;
+    }
+
     public CommonImage(int width, int height, int[] pixels) {
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         this.setImageWithARGBArray(width, height, pixels);
@@ -80,6 +84,20 @@ public class CommonImage {
         }
     }
 
+    public static boolean almostSameColor(int testColor, int mainColor) {
+        int main_red = redFromARGB(mainColor);
+        int main_green = greenFromARGB(mainColor);
+        int main_blue = greenFromARGB(mainColor);
+
+        int t_red = redFromARGB(testColor);
+        int t_green = greenFromARGB(testColor);
+        int t_blue = greenFromARGB(testColor);
+
+        return Math.abs(main_red - t_red) < 16
+                && Math.abs(main_green - t_green) < 16
+                && Math.abs(main_blue - t_blue) < 16;
+    }
+
     public final void cleanNoise(int blockSize) {
 //        System.out.println("cleanNoise blockSize=" + blockSize + " W=" + image.getWidth() + " H=" + image.getHeight());
         int x = 0;
@@ -105,9 +123,9 @@ public class CommonImage {
                     int t_blue = greenFromARGB(t);
 
                     if (
-                            Math.abs(main_red - t_red) < 16
-                                    && Math.abs(main_green - t_green) < 16
-                                    && Math.abs(main_blue - t_blue) < 16
+                            Math.abs(main_red - t_red) < 32
+                                    && Math.abs(main_green - t_green) < 32
+                                    && Math.abs(main_blue - t_blue) < 32
                     ) {
                         score++;
                     }

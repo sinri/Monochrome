@@ -207,6 +207,45 @@ public class MNCImage {
         return 0x000000FF & v;
     }
 
+    public static ArrayList<Byte> int2bytes(int v) {
+        ArrayList<Byte> x = new ArrayList<>();
+        x.add(MNCImage.int2byte((v & 0xFF000000) >> 24));
+        x.add(MNCImage.int2byte((v & 0x00FF0000) >> 16));
+        x.add(MNCImage.int2byte((v & 0x0000FF00) >> 8));
+        x.add(MNCImage.int2byte((v & 0x000000FF)));
+        return x;
+    }
+
+    public static int bytes2int(ArrayList<Byte> bytes, int index) {
+        if (bytes.size() <= index + 3) {
+            throw new IndexOutOfBoundsException();
+        }
+        int x = byte2int(bytes.get(index)) << 24;
+        x += byte2int(bytes.get(index + 1)) << 16;
+        x += byte2int(bytes.get(index + 2)) << 8;
+        x += byte2int(bytes.get(index + 3));
+        return x;
+    }
+
+    public static int bytes2int(ArrayList<Byte> bytes) {
+        return bytes2int(bytes, 0);
+    }
+
+    public static int bytes2int(byte[] bytes, int index) {
+        if (bytes.length <= index + 3) {
+            throw new IndexOutOfBoundsException();
+        }
+        int x = byte2int(bytes[index]) << 24;
+        x += byte2int(bytes[index + 1]) << 16;
+        x += byte2int(bytes[index + 2]) << 8;
+        x += byte2int(bytes[index + 3]);
+        return x;
+    }
+
+    public static int bytes2int(byte[] bytes) {
+        return bytes2int(bytes, 0);
+    }
+
     public void saveMNCImageToFile(File file) throws IOException {
         try (
                 BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file))
