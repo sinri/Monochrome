@@ -17,11 +17,11 @@ public class MosaicImage {
         loadMosaicImageFromBytes(bytes);
     }
 
-    public MosaicImage(CommonImage image, byte grayBytes) {
+    public MosaicImage(CommonImage image, byte grayBytes, int blockSize) {
         this.backgroundColor = 0xFFFFFFFF;
         this.width = image.image.getWidth();
         this.height = image.image.getHeight();
-        loadCommonImageToMosaicImage(image, grayBytes);
+        loadCommonImageToMosaicImage(image, grayBytes,blockSize);
     }
 
     public MosaicImage(File file) throws IOException {
@@ -70,8 +70,7 @@ public class MosaicImage {
         this.pieces = MosaicImagePiece.decodeToPieces(bytes, 12);
     }
 
-    private void loadCommonImageToMosaicImage(CommonImage image, byte grayBytes) {
-        int blockSize = 50;
+    private void loadCommonImageToMosaicImage(CommonImage image, byte grayBytes,int blockSize) {
         for (int x = 0; x < image.image.getWidth(); x += blockSize) {
             for (int y = 0; y < image.image.getHeight(); y += blockSize) {
                 // rect (x,y) - (x+blockSize-1,y+blockSize-1)

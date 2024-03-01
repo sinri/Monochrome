@@ -13,7 +13,7 @@ public class MosaicTest {
                     new File("/Users/leqee/code/Monochrome/debug/zipraw.jpg")
             );
             commonImage.cleanNoise(8);
-            MosaicImage mosaicImage = new MosaicImage(commonImage, (byte) 1);
+            MosaicImage mosaicImage = new MosaicImage(commonImage, (byte) 1,25);
 
             mosaicImage.saveMosaicImageToFile(
                     new File("/Users/leqee/code/Monochrome/debug/mosaic/g2.mosaic")

@@ -82,5 +82,13 @@ For iOS, a read toolkit class provided, which supports to return UIImage instanc
 from `.mnc.zip` file. It needs [CommonUtil](https://github.com/sinri/SinriXcodeBasement)
 and [SSZipArchive](https://github.com/soffes/ssziparchive).
 
+----
+
+## Plan Mosaic
+
+The basic thought is to record the background color, image size,
+and then split the image into certain blocks,
+after filtering the empty blocks out,
+compress the rest as MNC image pieces.
 
 
